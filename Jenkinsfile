@@ -1,35 +1,36 @@
 pipeline {
     agent any
-    
-    tools {
-        git 'Git'
-    }
-    
     stages {
-        stage('Checkout') {
+        stage('Clonar Repositorio') {
             steps {
-                script {
-                    try {
-                        // Limpia el workspace
-                        deleteDir()
-                        
-                        // Intenta clonar el repositorio
-                        checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: '*/main']],
-                            extensions: [],
-                            userRemoteConfigs: [[
-                                url: 'https://github.com/Basualto/eva01rab.git'
-                                // No es necesario credentialsId si el repositorio es público
-                            ]]
-                        ])
-                    } catch (Exception e) {
-                        // Manejo de errores
-                        echo "Error al clonar el repositorio: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
-                }
+                git branch: 'main', url: 'https://github.com/KeldarWolf/ProyectoRetailOff.git'
+                echo 'El repositorio se ha descargado exitosamente'
+            }
+        }
+        stage('Verificar Dependencias') {
+            steps {
+                echo '--Revisando las dependencias requeridas para el proyecto...'
+                // Aquí puedes incluir comandos específicos de tu proyecto, como validar archivos o dependencias
+            }
+        }
+        stage('Compilar Proyecto') {
+            steps {
+                echo '--Iniciando el proceso de compilación...'
+                // Comando para compilar, por ejemplo:
+                // sh './gradlew build' o 'mvn clean install'
+            }
+        }
+        stage('Ejecutar Pruebas') {
+            steps {
+                echo '--Corriendo las pruebas definidas en el proyecto...'
+                // Comando para ejecutar pruebas, por ejemplo:
+                // sh './gradlew test'
+            }
+        }
+        stage('Desplegar Proyecto') {
+            steps {
+                echo '--Realizando el despliegue de la aplicación...'
+                // Aquí puedes incluir comandos para desplegar, como copiar archivos a un servidor
             }
         }
     }
